@@ -23,6 +23,10 @@ livros['price_discount'] = livros['price_discount'].str.strip('R$ ').str.replace
 livros.loc[livros['price_discount'] == '', ['price_discount']] = np.nan
 livros['price_discount'] = livros['price_discount'].astype('float')
 
+editoras = conn.query('SELECT * FROM editoras_usp ORDER BY url')
+
+editoras = editoras.drop_duplicates(subset=['url'])
+
 st.header('Preços')
 cols_metrics_precos = st.columns(3)
 with cols_metrics_precos[0]:
@@ -38,9 +42,29 @@ st.plotly_chart(fig_precos)
 
 
 st.header('Editoras')
-st.metric('Editoras', value=str(livros['publisher'].nunique()))
+cols_metrics_editoras = st.columns(2)
+with cols_metrics_editoras[0]:
+    st.metric('Editoras cadastradas na feira', value=str(len(editoras)))
+with cols_metrics_editoras[1]:
+    st.metric('Editoras com livros no catálogo', value=str(livros['publisher'].nunique()))
 
 st.dataframe(livros['publisher'].value_counts(), use_container_width=True)
+
+st.subheader('Editoras sem livros cadastrados no catálogo')
+
+st.dataframe(editoras.loc[~editoras['name'].isin(livros['publisher'].unique(),), ['name', 'price_list', 'site']], hide_index=True, column_config={
+    'name': 'Editora',
+    'price_list': st.column_config.LinkColumn(
+        label='Catálogo de preços',
+        width='medium',
+        display_text='💸'
+    ),
+    'site': st.column_config.LinkColumn(
+        label='Site',
+        width='small',
+        display_text='🔗'
+    ),
+})
 
 
 st.header('Autores')

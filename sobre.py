@@ -1,4 +1,8 @@
-# Catálogo de livros da Feira do Livro da USP 2024
+import streamlit as st
+
+st.title('Sobre')
+
+st.markdown("""
 
 [Fonte dos dados](https://festadolivro.edusp.com.br/inicio)
 
@@ -11,3 +15,6 @@ Se precisar de alguma informação ou tiver qualquer sugestão, entre em contato
 https://bsky.app/profile/viniciusbatt.eng.br
             
 https://github.com/viniciusbatt/feiradolivrousp
+
+            
+""")
